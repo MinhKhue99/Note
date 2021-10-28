@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Note</string>
+    <string name="image">Image</string>
+    <string name="no_notes_available">No notes available!!!</string>
+    <string name="type_your_title">Type your title</string>
+    <string name="type_something">Type something...</string>
+    <string name="done">Done</string>
+    <string name="note_title">Note title</string>
+    <string name="search">Search</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+</resources>
