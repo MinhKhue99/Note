@@ -1,60 +1,88 @@
 package com.minhkhue.note.ui.fragment
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
+import com.google.android.material.snackbar.Snackbar
 import com.minhkhue.note.R
+import com.minhkhue.note.databinding.FragmentUpdateNoteBinding
+import com.minhkhue.note.model.Note
+import com.minhkhue.note.ui.MainActivity
+import com.minhkhue.note.viewmodel.NoteViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [UpdateNoteFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class UpdateNoteFragment : Fragment() {
-	// TODO: Rename and change types of parameters
-	private var param1: String? = null
-	private var param2: String? = null
+	private var _binding: FragmentUpdateNoteBinding? = null
+	private val binding get() = _binding!!
+	private lateinit var noteViewModel: NoteViewModel
+	private lateinit var currentNote: Note
+	private val args: UpdateNoteFragmentArgs by navArgs()
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		arguments?.let {
-			param1 = it.getString(ARG_PARAM1)
-			param2 = it.getString(ARG_PARAM2)
-		}
+		setHasOptionsMenu(true)
 	}
 	
 	override fun onCreateView(
 		inflater: LayoutInflater, container: ViewGroup?,
 		savedInstanceState: Bundle?
-	): View? {
-		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.fragment_update_note, container, false)
+	): View {
+		_binding = FragmentUpdateNoteBinding.inflate(inflater, container, false)
+		return binding.root
 	}
 	
-	companion object {
-		/**
-		 * Use this factory method to create a new instance of
-		 * this fragment using the provided parameters.
-		 *
-		 * @param param1 Parameter 1.
-		 * @param param2 Parameter 2.
-		 * @return A new instance of fragment UpdateNoteFragment.
-		 */
-		// TODO: Rename and change types and number of parameters
-		@JvmStatic
-		fun newInstance(param1: String, param2: String) =
-			UpdateNoteFragment().apply {
-				arguments = Bundle().apply {
-					putString(ARG_PARAM1, param1)
-					putString(ARG_PARAM2, param2)
-				}
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
+		noteViewModel = (activity as MainActivity).noteViewModel
+		
+		currentNote = args.note!!
+		binding.etNoteTitleUpdate.setText(currentNote.noteTitle)
+		binding.etNoteBodyUpdate.setText(currentNote.noteBody)
+		
+		if (currentNote.noteTitle.isNotEmpty()) {
+			binding.fabDone.setOnClickListener {
+				val title = binding.etNoteTitleUpdate.text.toString().trim()
+				val body = binding.etNoteBodyUpdate.text.toString().trim()
+				val note = Note(currentNote.id, title, body)
+				noteViewModel.updateNote(note)
+				view.findNavController().navigate(R.id.action_updateNoteFragment_to_homeFragment)
+				Snackbar.make(view, R.string.update_success, Snackbar.LENGTH_SHORT).show()
 			}
+		} else {
+			Snackbar.make(view, R.string.enter_title, Snackbar.LENGTH_SHORT).show()
+		}
+	}
+	
+	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+		menu.clear()
+		inflater.inflate(R.menu.menu_update_note, menu)
+		super.onCreateOptionsMenu(menu, inflater)
+	}
+	
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+		when (item.itemId) {
+			R.id.menu_delete -> deleteNote()
+		}
+		return super.onOptionsItemSelected(item)
+	}
+	
+	private fun deleteNote() {
+		AlertDialog.Builder(activity).apply {
+			setTitle(R.string.delete_note)
+			setMessage(R.string.message_delete_note)
+			setPositiveButton(R.string.delete_button) { _, _ ->
+				noteViewModel.deleteNote(currentNote)
+				view?.findNavController()?.navigate(R.id.action_updateNoteFragment_to_homeFragment)
+				view?.findNavController()?.popBackStack()
+			}
+			setNegativeButton(R.string.cancel_button, null)
+		}.create().show()
+	}
+	
+	override fun onDestroyView() {
+		super.onDestroyView()
+		_binding = null
 	}
 }
