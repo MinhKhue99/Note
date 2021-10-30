@@ -57,7 +57,6 @@ class NewNoteFragment : Fragment() {
 			noteViewModel.insertNote(note)
 			Snackbar.make(view, R.string.save_success, Snackbar.LENGTH_SHORT).show()
 			view.findNavController().navigate(R.id.action_newNoteFragment_to_homeFragment)
-			view.findNavController().popBackStack()
 		} else {
 			Snackbar.make(view, R.string.enter_title, Snackbar.LENGTH_SHORT).show()
 		}

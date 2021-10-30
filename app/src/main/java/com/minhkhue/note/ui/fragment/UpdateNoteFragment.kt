@@ -75,7 +75,6 @@ class UpdateNoteFragment : Fragment() {
 			setPositiveButton(R.string.delete_button) { _, _ ->
 				noteViewModel.deleteNote(currentNote)
 				view?.findNavController()?.navigate(R.id.action_updateNoteFragment_to_homeFragment)
-				view?.findNavController()?.popBackStack()
 			}
 			setNegativeButton(R.string.cancel_button, null)
 		}.create().show()

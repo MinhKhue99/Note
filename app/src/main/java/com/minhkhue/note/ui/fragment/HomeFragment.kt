@@ -49,7 +49,7 @@ class HomeFragment : Fragment(), SearchView.OnQueryTextListener {
 			setHasFixedSize(true)
 		}
 		activity?.let {
-			noteViewModel.getAllNote().observe(viewLifecycleOwner,{notes ->
+			noteViewModel.getAllNote().observe(viewLifecycleOwner, { notes ->
 				noteAdapter.differ.submitList(notes)
 				updateUI(notes)
 			})
@@ -57,11 +57,10 @@ class HomeFragment : Fragment(), SearchView.OnQueryTextListener {
 	}
 	
 	private fun updateUI(notes: List<Note>) {
-		if (notes.isEmpty()){
+		if (notes.isEmpty()) {
 			binding.cardView.visibility = View.VISIBLE
 			binding.recyclerView.visibility = View.GONE
-		}
-		else{
+		} else {
 			binding.cardView.visibility = View.GONE
 			binding.recyclerView.visibility = View.VISIBLE
 		}
@@ -74,6 +73,7 @@ class HomeFragment : Fragment(), SearchView.OnQueryTextListener {
 		mMenuSearch.isSubmitButtonEnabled = false
 		mMenuSearch.setOnQueryTextListener(this)
 	}
+	
 	override fun onDestroyView() {
 		super.onDestroyView()
 		_binding = null
@@ -92,6 +92,7 @@ class HomeFragment : Fragment(), SearchView.OnQueryTextListener {
 		}
 		return true
 	}
+	
 	private fun searchNote(query: String?) {
 		val searchQuery = "%$query%"
 		noteViewModel.searchNote(searchQuery).observe(
