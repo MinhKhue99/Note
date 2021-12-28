@@ -5,20 +5,21 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.minhkhue.note.model.Note
 import com.minhkhue.note.repository.NoteRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class NoteViewModel(application: Application, private val noteRepository: NoteRepository) :
 	AndroidViewModel(application) {
 	
-	fun insertNote(note: Note) = viewModelScope.launch {
+	fun insertNote(note: Note) = viewModelScope.launch(Dispatchers.IO) {
 		noteRepository.insertNote(note)
 	}
 	
-	fun updateNote(note: Note) = viewModelScope.launch {
+	fun updateNote(note: Note) = viewModelScope.launch(Dispatchers.IO) {
 		noteRepository.updateNote(note)
 	}
 	
-	fun deleteNote(note: Note) = viewModelScope.launch {
+	fun deleteNote(note: Note) = viewModelScope.launch(Dispatchers.IO) {
 		noteRepository.deleteNote(note)
 	}
 	

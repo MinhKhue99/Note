@@ -11,6 +11,7 @@ import com.minhkhue.note.R
 import com.minhkhue.note.databinding.FragmentUpdateNoteBinding
 import com.minhkhue.note.model.Note
 import com.minhkhue.note.ui.MainActivity
+import com.minhkhue.note.utils.DataEncryptorModern
 import com.minhkhue.note.viewmodel.NoteViewModel
 
 class UpdateNoteFragment : Fragment() {
@@ -19,6 +20,7 @@ class UpdateNoteFragment : Fragment() {
 	private lateinit var noteViewModel: NoteViewModel
 	private lateinit var currentNote: Note
 	private val args: UpdateNoteFragmentArgs by navArgs()
+	private lateinit var dataEncryptorModern: DataEncryptorModern
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -36,15 +38,19 @@ class UpdateNoteFragment : Fragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		noteViewModel = (activity as MainActivity).noteViewModel
-		
+		dataEncryptorModern = DataEncryptorModern()
 		currentNote = args.note!!
-		binding.etNoteTitleUpdate.setText(currentNote.noteTitle)
-		binding.etNoteBodyUpdate.setText(currentNote.noteBody)
+		binding.etNoteTitleUpdate.setText(dataEncryptorModern.decryptString(currentNote.noteTitle))
+		binding.etNoteBodyUpdate.setText(dataEncryptorModern.decryptString(currentNote.noteBody))
 		
 		if (currentNote.noteTitle.isNotEmpty()) {
 			binding.fabDone.setOnClickListener {
-				val title = binding.etNoteTitleUpdate.text.toString().trim()
-				val body = binding.etNoteBodyUpdate.text.toString().trim()
+				val title = dataEncryptorModern.encryptString(
+					binding.etNoteTitleUpdate.text.toString().trim()
+				)
+				val body = dataEncryptorModern.encryptString(
+					binding.etNoteBodyUpdate.text.toString().trim()
+				)
 				val note = Note(currentNote.id, title, body)
 				noteViewModel.updateNote(note)
 				view.findNavController().navigate(R.id.action_updateNoteFragment_to_homeFragment)

@@ -7,14 +7,14 @@ import com.minhkhue.note.model.Note
 @Dao
 interface NoteDao {
 	
-	@Insert
-	suspend fun insertNote(note: Note)
+	@Insert(onConflict = OnConflictStrategy.REPLACE)
+	fun insertNote(note: Note)
 	
 	@Update
-	suspend fun updateNote(note: Note)
+	fun updateNote(note: Note)
 	
 	@Delete
-	suspend fun deleteNote(note: Note)
+	fun deleteNote(note: Note)
 	
 	@Query("SELECT * FROM Note ORDER BY id DESC")
 	fun getAllNotes(): LiveData<List<Note>>

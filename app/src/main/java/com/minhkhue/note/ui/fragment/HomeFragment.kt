@@ -5,12 +5,14 @@ import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.minhkhue.note.R
 import com.minhkhue.note.adapter.NoteAdapter
 import com.minhkhue.note.databinding.FragmentHomeBinding
 import com.minhkhue.note.model.Note
 import com.minhkhue.note.ui.MainActivity
+import com.minhkhue.note.utils.DataEncryptorModern
 import com.minhkhue.note.viewmodel.NoteViewModel
 
 class HomeFragment : Fragment(), SearchView.OnQueryTextListener {
@@ -18,7 +20,7 @@ class HomeFragment : Fragment(), SearchView.OnQueryTextListener {
 	private val binding get() = _binding!!
 	private lateinit var noteViewModel: NoteViewModel
 	private lateinit var noteAdapter: NoteAdapter
-	
+	private lateinit var dataEncryptorModern: DataEncryptorModern
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setHasOptionsMenu(true)
@@ -35,6 +37,7 @@ class HomeFragment : Fragment(), SearchView.OnQueryTextListener {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		noteViewModel = (activity as MainActivity).noteViewModel
+		dataEncryptorModern = DataEncryptorModern()
 		setupRecyclerView()
 		binding.fabAddNote.setOnClickListener {
 			it.findNavController().navigate(R.id.action_homeFragment_to_newNoteFragment)
@@ -73,7 +76,16 @@ class HomeFragment : Fragment(), SearchView.OnQueryTextListener {
 		mMenuSearch.isSubmitButtonEnabled = false
 		mMenuSearch.setOnQueryTextListener(this)
 	}
-	
+
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+		when(item.itemId){
+			R.id.menu_setting ->{
+				findNavController().navigate(R.id.action_homeFragment_to_settingFragment)
+			}
+		}
+		return super.onOptionsItemSelected(item)
+
+	}
 	override fun onDestroyView() {
 		super.onDestroyView()
 		_binding = null
@@ -88,7 +100,7 @@ class HomeFragment : Fragment(), SearchView.OnQueryTextListener {
 	
 	override fun onQueryTextChange(newText: String?): Boolean {
 		if (newText != null) {
-			searchNote(newText)
+			searchNote(dataEncryptorModern.encryptString(newText))
 		}
 		return true
 	}

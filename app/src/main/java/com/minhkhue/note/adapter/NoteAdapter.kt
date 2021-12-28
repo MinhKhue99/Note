@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.minhkhue.note.databinding.NoteItemBinding
 import com.minhkhue.note.model.Note
 import com.minhkhue.note.ui.fragment.HomeFragmentDirections
+import com.minhkhue.note.utils.DataEncryptorModern
 import java.util.*
 
 class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
@@ -36,9 +37,10 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
 	}
 	
 	override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
+		val dataEncryptorModern = DataEncryptorModern()
 		val note = differ.currentList[position]
-		holder.binding.tvNoteTitle.text = note.noteTitle
-		holder.binding.tvNoteBody.text = note.noteBody
+		holder.binding.tvNoteTitle.text = dataEncryptorModern.decryptString(note.noteTitle)
+		holder.binding.tvNoteBody.text = dataEncryptorModern.decryptString(note.noteBody)
 		val random = Random()
 		val color = Color.argb(
 			255, random.nextInt(256),

@@ -17,4 +17,8 @@
     <string name="update_success">Note updated successfully</string>
     <string name="delete_success">Note deleted successfully</string>
     <string name="enter_title">Please enter note title before saving</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="settings">Settings</string>
+    <string name="password_has_not_set_yet_please_using_biometric_to_login_and_set_pass_word_later">Password has not set yet. Please using Biometric to login and set pass word later.</string>
 </resources>
